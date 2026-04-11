@@ -10,6 +10,9 @@ class LeaveCreate(BaseModel):
     reason: str
 
 
+class LeaveStatusUpdate(BaseModel):
+    status: str
+    
 class LeaveOut(BaseModel):
     id: int
     employee_id: int

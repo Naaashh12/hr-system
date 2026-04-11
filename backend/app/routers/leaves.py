@@ -66,6 +66,15 @@ def get_my_leaves(
 
     return emp.leaves
 
+@router.get("/pending", response_model=list[leave_schema.LeaveOut])
+def get_pending_leaves(
+    db: Session = Depends(get_db),
+    user=Depends(require_hr_or_admin)
+):
+    return db.query(leave_model.Leave).filter(
+        leave_model.Leave.status == "pending"
+    ).all()
+
 @router.get("/{leave_id}", response_model=leave_schema.LeaveOut)
 def get_leave(leave_id: int, db: Session = Depends(get_db)):
     
@@ -78,13 +87,13 @@ def get_leave(leave_id: int, db: Session = Depends(get_db)):
 
     return leave
 
-@router.put("/{leave_id}/status", response_model=leave_schema.LeaveOut)
+
 @router.put("/{leave_id}/status", response_model=leave_schema.LeaveOut)
 def update_leave_status(
     leave_id: int,
-    status: str,
+    data: leave_schema.LeaveStatusUpdate,
     db: Session = Depends(get_db),
-    user=Depends(require_hr_or_admin)  # 🔥 ADD THIS LINE
+    user=Depends(require_hr_or_admin)
 ):
     leave = db.query(leave_model.Leave).filter(
         leave_model.Leave.id == leave_id
@@ -93,10 +102,10 @@ def update_leave_status(
     if not leave:
         raise HTTPException(status_code=404, detail="Leave not found ❌")
 
-    if status not in ["approved", "rejected"]:
+    if data.status not in ["approved", "rejected"]:
         raise HTTPException(status_code=400, detail="Invalid status")
 
-    leave.status = status
+    leave.status = data.status
 
     db.commit()
     db.refresh(leave)
@@ -104,11 +113,4 @@ def update_leave_status(
     return leave
 
 
-@router.get("/pending", response_model=list[leave_schema.LeaveOut])
-def get_pending_leaves(
-    db: Session = Depends(get_db),
-    user=Depends(require_hr_or_admin)
-):
-    return db.query(leave_model.Leave).filter(
-        leave_model.Leave.status == "pending"
-    ).all()
+
