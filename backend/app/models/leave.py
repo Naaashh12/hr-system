@@ -7,12 +7,10 @@ class Leave(Base):
     __tablename__ = "leaves"
 
     id = Column(Integer, primary_key=True, index=True)
-    employee_id = Column(Integer, ForeignKey("employees.id"))
+    employee_id = Column(Integer, ForeignKey("employees.id")) #Foreign key to link leave to employee
     leave_type = Column(String)
     start_date = Column(Date)
     end_date = Column(Date)
     status = Column(String, default="pending")
     reason = Column(String)
-
-    employee = relationship("Employee")
     employee = relationship("Employee", back_populates="leaves") 
