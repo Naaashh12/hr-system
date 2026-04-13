@@ -7,6 +7,7 @@ from app.routers import auth
 from app.models import user 
 from app.routers import dashboard
 
+from fastapi.middleware.cors import CORSMiddleware
 
 import logging
 
@@ -31,3 +32,11 @@ def root():
 @app.get("/test-db")
 def test_db(db: Session = Depends(get_db)):
     return {"message": "Database connected successfully ✅"}
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # allow React
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

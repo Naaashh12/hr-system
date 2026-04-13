@@ -6,7 +6,7 @@ from app.schemas.employee import EmployeeCreate, EmployeeOut, EmployeeUpdate
 from app.schemas import employee as employee_schema
 from typing import Optional
 from sqlalchemy import or_ 
-from app.routers.auth import get_current_user, require_admin, require_hr_or_admin
+from app.routers.auth import get_current_user, require_admin, require_hr
 import logging
 
 router = APIRouter(prefix="/employees", tags=["employees"])
@@ -128,7 +128,7 @@ def patch_employee(
     employee_id: int,
     data: EmployeeUpdate,
     db: Session = Depends(get_db),
-    user=Depends(require_hr_or_admin)
+    user=Depends(require_hr)
 ):
     logger.info(f"Updating employee {employee_id} with data {data.dict(exclude_unset=True)}")
 
