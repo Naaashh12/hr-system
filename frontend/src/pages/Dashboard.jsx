@@ -12,7 +12,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2>Dashboard 🎉</h2>
+      <h2>HR Dashboard</h2>
 
       {/* 👤 EMPLOYEE */}
       {role === "employee" && (
